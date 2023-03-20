@@ -1,0 +1,48 @@
+[{
+  "id": 1,
+  "first_name": "Caleb",
+  "email": "jdtg0@aws.com",
+  "gender": "Female"
+}, {
+  "id": 2,
+  "first_name": "Aida",
+  "email": "adattt@test.gov",
+  "gender": "Female",
+  "course" : [
+    { "courseNo" : "CS",
+      "grade"  : "B",
+      "creditHours" : 4 },
+
+    { "courseNo" : "CS12",
+      "grade"  : "A",
+      "creditHours" : 4 }
+  ]
+}, {
+  "id": 3,
+  "first_name": "Alex",
+  "email": "Adavis@bccs.com",
+  "gender": "Male",
+  "course" : [
+    { "courseNo" : "BS",
+      "grade"  : "B",
+      "creditHours" : 3 },
+
+    { "courseNo" : "Hist",
+      "grade"  : "A",
+      "creditHours" : 3 }
+  ]
+}, {
+  "id": 4,
+  "first_name": "Meba",
+  "email": "mtravis@yahoo.com",
+  "gender": "Male",
+  "course" : [
+    { "courseNo" : "ENG",
+      "grade"  : "A",
+      "creditHours" : 4 },
+
+    { "courseNo" : "CS12",
+      "grade"  : "A",
+      "creditHours" : 4 }
+  ]
+}]
