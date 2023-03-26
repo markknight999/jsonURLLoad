@@ -3,7 +3,11 @@ package jsonURLLoad;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.Serial;
@@ -12,38 +16,43 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+@SpringBootApplication
 public class ReadJsonFromUrl implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	@Autowired
-	Student id;
+@Autowired
+Student id;
 
-	@Autowired
-	Course courseNo;
+@Autowired
+Course courseNo;
 
 	public static void main(String[] args) throws Exception {
+
+		ConfigurableApplicationContext context = SpringApplication.run(ReadJsonFromUrl.class, args);
 
 		String url = "https://hccs-advancejava.s3.amazonaws.com/student_course.json";
 
 		RestTemplate restTemplate = new RestTemplate();
-		String json = restTemplate.getForObject(url, String.class);
+		String jsonString = restTemplate.getForObject(url, String.class);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-		List<Student> students = objectMapper.readValue(json, new TypeReference<List<Student>>() {});
-		List<Course> courses = new ArrayList<Course>();
+		List<Student> students = objectMapper.readValue(jsonString, TypeFactory.defaultInstance().constructCollectionType(List.class, Student.class));
+
 		/*
 		 I tried all these combinations are TONS more and could not get the courses to map!!!
 		 List<Course> courses = objectMapper.readValue(json, new TypeReference<List<Student>>() {}
+		 List<Course> courses = objectMapper.readValue(json, new TypeReference<List<Course>>() {}
 		 TypeReference<List<Course>> () {});
 		 List<Course> courses = (List<Course>) objectMapper.readValue(json, Course.class);
 		 Course[] courses = objectMapper.readValue(json, Course[].class);
 		*/
 
-		courseSetter(json, students, courses);
+		// I found that I was missing the @JsonProperty on the students "Courses"
 		// Just to make this work, I manually added the fields to the courses objects
+		//courseSetter(jsonString, students, courses);
 
 		try (Scanner userInput = new Scanner(System.in)) {
 			System.out.println("Student + Course Number Search System\n");
@@ -52,12 +61,13 @@ public class ReadJsonFromUrl implements Serializable {
 			System.out.println("Enter Course Number to search for: ");
 			String courseNumber = userInput.nextLine();
 
-			courseSearch(students, courses, studentName, courseNumber);
+			courseSearch(students, studentName, courseNumber);
+
 		}
 
 	}
 
-	private static void courseSearch(List<Student> students, List<Course> courses, String studentName,
+	private static void courseSearch(List<Student> students, String studentName,
 			String courseNumber) {
 		int gpa = 0;
 		String gradeLetter = "";
@@ -65,9 +75,11 @@ public class ReadJsonFromUrl implements Serializable {
 			if (students.get(i).getFirst_name().equalsIgnoreCase(studentName)) {
 				System.out.print("FOUND: " + students.get(i).getFirst_name()
 						+ " with a " + courseNumber + " gpa of ");
-				for (Course cours : courses) {
+				for (Course cours : students.get(i).getCourses()) {
+					String grade = cours.getGrade();
+					if(cours.getCourseNo() == null) { break; }
 					if (cours.getCourseNo().equalsIgnoreCase(courseNumber)) {
-						gradeLetter = courses.get(i).getGrade();
+						gradeLetter = cours.getGrade();
 						if (gradeLetter.equalsIgnoreCase("A")) {
 							gpa = 4;
 							break;
@@ -101,7 +113,7 @@ public class ReadJsonFromUrl implements Serializable {
 		}
 		
 	}
-
+/*
 	private static <Students> void courseSetter(String json, List<Students> students, List<Course> courses) {
 
 		Course student11 = new Course(1, "", "", "");
@@ -125,6 +137,9 @@ public class ReadJsonFromUrl implements Serializable {
 		courses.add(student41);
 		courses.add(student42);
 
+		System.out.println(courses.toString());
+
 	}
+*/
 
 }

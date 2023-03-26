@@ -1,8 +1,11 @@
 package jsonURLLoad;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class Course {
 
     private int id;
@@ -11,6 +14,9 @@ public class Course {
     private String grade;
     private String creditHours;
     private List<Student> students;
+
+    public Course() {
+    }
 
     public Course(int id, String courseNo, String grade, String creditHours) {
         this.id = id;

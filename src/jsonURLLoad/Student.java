@@ -1,14 +1,19 @@
 package jsonURLLoad;
 
+import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
     public class Student {
 
         private int id;
         private String first_name;
         private String email;
         private String gender;
+        @JsonProperty("course")
         private List<Course> courses;
 
         public Student(int id, String first_name, String email, String gender, ArrayList<Course> courses) {
